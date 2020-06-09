@@ -1,7 +1,7 @@
 # CUDARecv
 An open-source parallelized direct position estimation-based GPS receiver
 
-Grace Gao Research Group
+Stanford Navigation and Autonomous Vehicles Laboratory
 
 ## Literature References
 M. Peretic, "Development and analysis of a parallelized direct position estimation-based GPS receiver implementation," M.S. thesis, University of Illinois at Urbana-Champaign, 2019. [Online](http://hdl.handle.net/2142/105723)
@@ -146,7 +146,7 @@ If there are errors with opening these files, provide their absolute paths in [d
 
 An open-source sequential GPS receiver with scalar tracking (conventional two-steps) and DPE (one-step) localization algorithms.
 
-Grace Gao Research Group
+Stanford Navigation and Autonomous Vehicles Laboratory
 
 ## Literature References
 E. Wycoff, Y. Ng, and G. X. Gao, "Python GNSS Receiver: An Object-Oriented Software Platform Suitable for Multiple Receivers," *GPS World Magazine*, February 2015. [Online](https://web.stanford.edu/~gracegao/publications//magazine//052-057_GPS_Feb15_v2.pdf)
@@ -184,7 +184,7 @@ Grace Gao Research Group
 
 
 # Copyright 
-Copyright (c) 2019 Grace Gao Research Group
+Copyright (c) 2020 Stanford Navigation and Autonomous Systems Laboratory
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
