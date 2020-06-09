@@ -1,0 +1,132 @@
+
+ARCHITECTURE FOR GNSS C++ REAL TIME RECEIVER
+----------------------------------------------
+
+***This is still a draft of ideas
+
+General Design Goals
+---------------------------
+Real-Time capability
+Performance and Efficiency in computations
+Modular approach for scalability
+Clean and Readable Code
+Unix style command line interface
+Want to be able to port to different processors/platform later on
+Use as little dependencies as possible.
+Lightweight
+Meaning: No Boost Library + Use POSIX APIs
+Makefile to build program in different configuration, for example, whether to
+build with openMP, FPGA interface, GPU interface, or ROS interface. And all
+these different configurations to build from one code base.
+
+
+DEFINITIONS
+---------------
+Sample              A single ADC value
+SampleBlock         An array/buffer of samples equivalent to 1ms of data
+Module/DSP Block    A code block/object that does a specific DSP function. For
+                    example: Correlator, LowPassFilter, Discriminator etc.
+Ports               The I/O of modules
+SampleSource        A C++ Object and thread to load samples into buffer. Can't
+                    think of a better name for this yet. This object
+                    mm_mallocs 2 buffers aligned to 64 bytes to get better
+                    cache performance.
+                    This loads samples into the next buffer while the DSP Flow
+                    thread is processing on the previous buffer. These buffers
+                    then swap every ms. Multiple SampleSources can be
+                    initialized for multi-receiver algorithms. Needs
+                    synchronisation between them.
+DSP                 A C++ header/namespace to define datatypes to be used in
+                    the modules
+DSP Flow            A thread that runs all the modules required for any
+                    receiver tracking loop.
+
+
+            Launch program
+                    |
+    Parse command Line input options
+                    |
+    Launch Console under main thread
+    (unless disabled in cmd options)
+                    |
+    Launch SampleSource thread and
+    DSP Flow thread in higher RT priority
+
+
+Modules / DSP Blocks
+-----------------------
+A code block / object for a specific DSP function. Object contains member
+variables for its own specific implementation. There are public functions to
+register input/output "ports" of the module. These functions provide checks to
+enforce that the inputs fed to it are acceptable types from outputs of other
+modules. This makes sure the overall flow diagram makes sense. The
+registration of input/output "ports" are basically storing memory pointers to
+where the actual data is held. Thus, the physical interface of the modules are
+shared memory architecture and not message passing architecture. This is to
+improve efficiency with cache accesses and its a monolithic program anyway.
+The input/output "ports" are just defined to look like its a logical flow of
+data in code for better readability and scalability. Registration of input /
+output "ports" are done initially and on running the receiver, the DSP Flow
+thread just calls an Update() function to run each module sequentially.
+I started making an abstract class with virtual Update() and I/O registering
+functions. Modules should inherit from this and implement module specific
+code/variables/functions. Code still to be finalized.
+
+
+Ports
+----------------
+The inputs and outputs of modules. This is implemented as a struct. Contains
+things like datatypes, exponent, valuetype, pointer to actual data, and length
+of the array if the data is an array. The declaration and initialization of a
+port struct is done by the module that outputs it. Pointer to this struct is
+then passed to the other modules that take that as an input. Those modules
+will then check the parameters to make sure that the type of data/values are
+what it accepts. This also means modules have to be initialized from beginning
+to end in the direction of the flow.
+The rationale for this is that we want to be able to switch algorithms while
+running. Which means to switch the flow of modules. Thus, we need code to
+check that the flow makes sense before allowing the algorithm to run. This
+gives user an error/warning if something doesn't make sense.
+
+
+SampleSource
+----------------
+Dual Buffer approach. Each buffer is an array for 1ms of data.
+Use arrays and not STL Vector --> use primitive types for performance.
+mm_malloc aligned to 64 bytes for better cache performance. Also makes it
+possible to use SIMD to accelerate stuff.
+A thread on its own. Fills one buffer while DSP modules are processing on the
+other buffer.
+Implement as a class for multiple objects for multiple receivers. Needs a
+synchronization mechanism between these threads.
+
+
+Correlators
+----------------
+A kind of module. Use loops to perform correlations. All PRN Channels in one
+module. Not one channel per module. This is to allow using loop unrolling
+techniques to optimize cache accesses. Parallelization can be done with openMP
+which splits the threads according to 'position' in buffer to compute, and not
+by channel.
+
+
+Threads
+-----------------
+Use C++11 threads object? or just pthreads library? C++11 thread would make
+the code look cleaner. Underlying that is still a 'wrapper' that uses
+pthreads. Will still have to use pthreads to set scheduling method and
+priority. C++11 thread can get native handle to call other pthread functions
+to change priority.
+
+Main thread will invoke other threads, and run as console UI at lower priority
+. The SampleSource and DSP Flow threads run with real time scheduling at
+higher priority.
+
+
+Data Logging
+--------------------
+Modules do not log data. Data can be tapped by input/output ports of modules
+using a lower priority thread. This thread will then be an interface to the
+'outside' world. This can be semi-real-time display, log to file or pipes, or
+sent out as a message in systems like ROS. 
+

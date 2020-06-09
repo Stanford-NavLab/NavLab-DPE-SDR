@@ -1,0 +1,65 @@
+
+CODING STYLE FOR GNSS C++ REAL TIME RECEIVER
+
+Git Repo branches:
+Master  -
+Stable  - Pulls from Stable as and when we want to bump up a new version
+Beta    - Pulls from Dev and run test scripts here
+Dev     - Merges with new code and initial tests
+others  - Can be by topics of certain parts to be worked on
+
+1. Use Egyptian brackets with 1 space before opening bracket
+2. Use SPACES instead of TABs for indentation
+3. Indentation = 4 spaces
+4. Each line not more that 80 columns
+5. No Trailing spaces in each line
+6. Naming convention: thisName, ThisName, or This_Name?
+7. Header files: #ifndef INC__SOMENAME_H_
+   Rationale being that compiler of standard libraries use __SAMENAME. So if
+   we do INC__SOMENAME_H it wouldn't conflict.
+8. Comments style? need to work with Doxygen
+
+
+Example:
+
+
+In .h file:
+
+
+/** \brief Some brief description
+ *
+ *  More detailed description.
+ *  \param  arg whatever arg does..
+ *  \return some kind of error code
+ */
+int FunctionName(char arg);
+
+
+
+In .cpp file:
+
+
+int FunctionName(char arg) {
+    nop();
+
+    nop();
+
+    if (a < b) {
+        nop();
+    } else {
+        nop();
+    }
+
+    /* The following code does
+    blah blah blah */
+    switch (a) {
+    case 1:                 // its okay to
+        break;              // have comments on the
+    case 2:                 // right but needs to
+        break;              // be column aligned
+    default:                // within a function?
+        break;              // or a file?
+    }
+
+    return 0;
+}

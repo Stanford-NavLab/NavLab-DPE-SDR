@@ -1,0 +1,9 @@
+
+newf acq
+loadf 0
+setparam 0 SampleBlock SamplingFrequency 2.5e6f
+setparam 0 SampleBlock RealTime false
+setparam 0 SampleBlock InputSourceType \x1
+setparam 0 SampleBlock Hostname "192.168.10.1"
+setparam 0 SampleBlock PortNo 1111
+
