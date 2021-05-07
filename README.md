@@ -4,7 +4,7 @@ An open-source parallelized direct position estimation-based GPS receiver
 Stanford Navigation and Autonomous Vehicles Laboratory
 
 ## Literature References
-Matthew Peretic and Grace X. Gao, Design of a Parallelized Direct Position Estimation-Based GNSS Receiver, Navigation: Journal of the Institute of Navigation, vol. 68, no. 1, pp. 21-39, Dec 2020. doi: 10.1002/navi.402. [paper](https://stanford.box.com/s/fe5obgok7kkbj9hvl1hxkbtkcoezur52)
+Matthew Peretic and Grace X. Gao, Design of a Parallelized Direct Position Estimation-Based GNSS Receiver, Navigation: Journal of the Institute of Navigation, vol. 68, no. 1, pp. 21-39, Dec 2020. doi: 10.1002/navi.402. [[paper](https://stanford.box.com/s/fe5obgok7kkbj9hvl1hxkbtkcoezur52)]
 
 
 ## Development Configuration
